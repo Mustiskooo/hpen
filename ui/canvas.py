@@ -6,29 +6,29 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
 class InfiniteCanvas(QGraphicsView):
     def __init__(self):
         super().__init__()
-        
 #tablet desteği
-self.setAttribute(Qt.WA_TabletTracking, True)
+        self.setAttribute(
+            Qt.WA_TabletTracking,
+            True
+        )
+
         self.scene = QGraphicsScene(self)
         self.setScene(self.scene)
-
-#sonsuz hissi için büyük alan
+ #sonsuz hissi için büyük alan
         self.scene.setSceneRect(
             -10000,
             -10000,
             20000,
             20000
         )
-
-#canvas rengi
+ #canvas rengi
         self.setBackgroundBrush(
             QBrush(QColor("#FCFCFC"))
         )
-#render
+ #render
         self.setRenderHint(
             QPainter.Antialiasing
         )
-
 #scrollbar gizleme
         self.setHorizontalScrollBarPolicy(
             Qt.ScrollBarAlwaysOff
@@ -41,8 +41,13 @@ self.setAttribute(Qt.WA_TabletTracking, True)
         self.setDragMode(
             QGraphicsView.ScrollHandDrag
         )
+
 #zoom seviyesi
         self.zoom = 1.0
+
+#zoom sınırları
+        self.min_zoom = 0.2
+        self.max_zoom = 5.0
 
 
     def wheelEvent(self, event):
@@ -50,36 +55,21 @@ self.setAttribute(Qt.WA_TabletTracking, True)
         zoom_factor = 1.15
 
         if event.angleDelta().y() > 0:
-            self.zoom *= zoom_factor
 
-            self.scale(
-                zoom_factor,
-                zoom_factor
-            )
+            if self.zoom < self.max_zoom:
+                self.zoom *= zoom_factor
+
+                self.scale(
+                    zoom_factor,
+                    zoom_factor
+                )
 
         else:
-            self.zoom /= zoom_factor
 
-            self.scale(
-                1 / zoom_factor,
-                1 / zoom_factor
-            )
-#zoom sınırları
-    self.min_zoom = 0.2
-    self.max_zoom = 5.0
-    
-    if event.angleDelta().y() > 0:
-    if self.zoom < self.max_zoom:
-        self.zoom *= zoom_factor
-        self.scale(
-            zoom_factor,
-            zoom_factor
-        )
+            if self.zoom > self.min_zoom:
+                self.zoom /= zoom_factor
 
-else:
-    if self.zoom > self.min_zoom:
-        self.zoom /= zoom_factor
-        self.scale(
-            1 / zoom_factor,
-            1 / zoom_factor
-        )
+                self.scale(
+                    1 / zoom_factor,
+                    1 / zoom_factor
+                )
