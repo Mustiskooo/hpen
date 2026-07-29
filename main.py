@@ -105,8 +105,17 @@ class HPen(QMainWindow):
 
         tb.addStretch()
 
-        for t in ["↶","↷","✏","🧽","🔍"]:
-            tb.addWidget(QPushButton(t))
+        undo_btn = QPushButton("↶")
+        redo_btn = QPushButton("↷")
+        pen_btn = QPushButton("✏")
+        eraser_btn = QPushButton("🧽")
+        zoom_btn = QPushButton("🔍")
+
+        tb.addWidget(undo_btn)
+        tb.addWidget(redo_btn)
+        tb.addWidget(pen_btn)
+        tb.addWidget(eraser_btn)
+        tb.addWidget(zoom_btn)
 
         right_layout.addWidget(toolbar)
 
@@ -120,8 +129,17 @@ class HPen(QMainWindow):
         
         canvas = InfiniteCanvas()
 
-        canvas_layout.addWidget(canvas)
+#kalem butonu
+        pen_btn.clicked.connect(
+            canvas.setPen
+        )
 
+#silgi butonu
+        eraser_btn.clicked.connect(
+            canvas.setEraser
+        )
+
+        canvas_layout.addWidget(canvas)
         right_layout.addWidget(canvas_area)
 
         root.addWidget(right)
