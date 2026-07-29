@@ -11,6 +11,8 @@ from PySide6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QWidget,
+    QColorDialog,
+    QSlider
 )
 
 
@@ -110,11 +112,24 @@ class HPen(QMainWindow):
         pen_btn = QPushButton("✏")
         eraser_btn = QPushButton("🧽")
         zoom_btn = QPushButton("🔍")
+        color_btn = QPushButton("🎨")
+
+        size_slider = QSlider(
+        Qt.Horizontal
+        )
+
+        size_slider.setMinimum(1)
+        size_slider.setMaximum(20)
+        size_slider.setValue(3)
+
+        size_slider.setFixedWidth(120)
 
         tb.addWidget(undo_btn)
         tb.addWidget(redo_btn)
         tb.addWidget(pen_btn)
         tb.addWidget(eraser_btn)
+        tb.addWidget(color_btn)
+        tb.addWidget(size_slider)
         tb.addWidget(zoom_btn)
 
         right_layout.addWidget(toolbar)
@@ -128,6 +143,20 @@ class HPen(QMainWindow):
         from ui.canvas import InfiniteCanvas
         
         canvas = InfiniteCanvas()
+        
+#renk seçici
+        def chooseColor():
+            color = QColorDialog.getColor()
+
+        if color.isValid():
+            canvas.setColor(
+                color.name()
+            )
+
+
+color_btn.clicked.connect(
+    chooseColor
+)
 
 #kalem butonu
         pen_btn.clicked.connect(
