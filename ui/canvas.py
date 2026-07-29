@@ -6,9 +6,12 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
 class InfiniteCanvas(QGraphicsView):
     def __init__(self):
         super().__init__()
-
+        
+#tablet desteği
+self.setAttribute(Qt.WA_TabletTracking, True)
         self.scene = QGraphicsScene(self)
         self.setScene(self.scene)
+
 #sonsuz hissi için büyük alan
         self.scene.setSceneRect(
             -10000,
@@ -61,3 +64,22 @@ class InfiniteCanvas(QGraphicsView):
                 1 / zoom_factor,
                 1 / zoom_factor
             )
+#zoom sınırları
+    self.min_zoom = 0.2
+    self.max_zoom = 5.0
+    
+    if event.angleDelta().y() > 0:
+    if self.zoom < self.max_zoom:
+        self.zoom *= zoom_factor
+        self.scale(
+            zoom_factor,
+            zoom_factor
+        )
+
+else:
+    if self.zoom > self.min_zoom:
+        self.zoom /= zoom_factor
+        self.scale(
+            1 / zoom_factor,
+            1 / zoom_factor
+        )
