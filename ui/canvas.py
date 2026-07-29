@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor, QPainter, QPen
+from PySide6.QtGui import QBrush, QColor, QPainter, QPen, QPainterPath
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
 
 
@@ -39,7 +39,7 @@ class InfiniteCanvas(QGraphicsView):
 
 #pan
         self.setDragMode(
-            QGraphicsView.ScrollHandDrag
+            QGraphicsView.NoDrag
         )
 
 #zoom seviyesi
@@ -48,6 +48,26 @@ class InfiniteCanvas(QGraphicsView):
 #zoom sınırları
         self.min_zoom = 0.2
         self.max_zoom = 5.0
+
+#çizim durumu
+        self.drawing = False
+
+#çizgi yolu
+        self.path = None
+
+#aktif çizgi
+        self.current_item = None
+
+#kalem ayarları
+        self.pen = QPen(
+            QColor("#000000")
+        )
+
+        self.pen.setWidthF(3)
+
+        self.pen.setCapStyle(
+            Qt.RoundCap
+        )
 
 
     def wheelEvent(self, event):
@@ -125,3 +145,60 @@ class InfiniteCanvas(QGraphicsView):
             )
 
             y += grid_size
+
+
+    def mousePressEvent(self, event):
+#sol tuş ile çizim
+        if event.button() == Qt.LeftButton:
+
+            self.drawing = True
+
+            pos = self.mapToScene(
+                event.position().toPoint()
+            )
+
+            self.path = QPainterPath()
+
+            self.path.moveTo(
+                pos
+            )
+
+            self.current_item = self.scene.addPath(
+                self.path,
+                self.pen
+            )
+
+        else:
+            super().mousePressEvent(event)
+
+
+    def mouseMoveEvent(self, event):
+#çizim aktifse
+        if self.drawing:
+
+            pos = self.mapToScene(
+                event.position().toPoint()
+            )
+
+            self.path.lineTo(
+                pos
+            )
+
+            self.current_item.setPath(
+                self.path
+            )
+
+        else:
+            super().mouseMoveEvent(event)
+
+
+    def mouseReleaseEvent(self, event):
+#çizim bitişi
+        if event.button() == Qt.LeftButton:
+
+            self.drawing = False
+
+            self.path = None
+
+        else:
+            super().mouseReleaseEvent(event)
