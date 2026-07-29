@@ -116,8 +116,9 @@ class HPen(QMainWindow):
         canvas_layout = QVBoxLayout(canvas_area)
         canvas_layout.setContentsMargins(30,30,30,30)
 
-        canvas = QFrame()
-        canvas.setObjectName("canvas")
+        from ui.canvas import InfiniteCanvas
+        
+        canvas = InfiniteCanvas()
 
         canvas_layout.addWidget(canvas)
 
