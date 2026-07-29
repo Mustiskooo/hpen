@@ -62,16 +62,35 @@ class InfiniteCanvas(QGraphicsView):
 #aktif araç
         self.tool = "pen"
 
-#kalem ayarları
-        self.pen = QPen(
-            QColor("#000000")
+#renk
+        self.current_color = "#000000"
+
+#kalem boyutu
+        self.base_size = 3
+
+#basınç
+        self.pressure = 1.0
+
+
+    def createPen(self):
+#kalem oluştur
+        pen = QPen(
+            QColor(self.current_color)
         )
 
-        self.pen.setWidthF(3)
+        pen.setWidthF(
+            self.base_size * self.pressure
+        )
 
-        self.pen.setCapStyle(
+        pen.setCapStyle(
             Qt.RoundCap
         )
+
+        pen.setJoinStyle(
+            Qt.RoundJoin
+        )
+
+        return pen
 
 
     def wheelEvent(self, event):
@@ -174,11 +193,11 @@ class InfiniteCanvas(QGraphicsView):
 
 
 #kalem
+            self.drawing = True
+
             pos = self.mapToScene(
                 event.position().toPoint()
             )
-
-            self.drawing = True
 
             self.path = QPainterPath()
 
@@ -188,7 +207,7 @@ class InfiniteCanvas(QGraphicsView):
 
             self.current_item = self.scene.addPath(
                 self.path,
-                self.pen
+                self.createPen()
             )
 
         else:
@@ -245,6 +264,21 @@ class InfiniteCanvas(QGraphicsView):
 
         else:
             super().mouseReleaseEvent(event)
+
+
+    def tabletEvent(self, event):
+#tablet basıncı
+        self.pressure = event.pressure()
+
+        if self.pressure <= 0:
+            self.pressure = 1.0
+
+        event.accept()
+
+
+    def setColor(self, color):
+#renk değiştir
+        self.current_color = color
 
 
     def setEraser(self):
