@@ -1,7 +1,6 @@
 import sys
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -44,11 +43,6 @@ class HPen(QMainWindow):
             border-bottom:1px solid #34353B;
         }
 
-        QFrame#canvas{
-            background:white;
-            border-radius:12px;
-        }
-
         QPushButton{
             background:transparent;
             border:none;
@@ -68,6 +62,7 @@ class HPen(QMainWindow):
         root.setContentsMargins(0,0,0,0)
         root.setSpacing(0)
 
+
 #sidebar
         sidebar = QFrame()
         sidebar.setObjectName("sidebar")
@@ -78,7 +73,9 @@ class HPen(QMainWindow):
 
         logo = QLabel("✏")
         logo.setAlignment(Qt.AlignCenter)
-        logo.setStyleSheet("font-size:30px;")
+        logo.setStyleSheet(
+            "font-size:30px;"
+        )
 
         side_layout.addWidget(logo)
 
@@ -90,93 +87,189 @@ class HPen(QMainWindow):
         side_layout.addStretch()
 
         root.addWidget(sidebar)
+
+
 #sağ :3
         right = QWidget()
+
         right_layout = QVBoxLayout(right)
-        right_layout.setContentsMargins(0,0,0,0)
+        right_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0
+        )
+
         right_layout.setSpacing(0)
+
+
 #toolbar
         toolbar = QFrame()
-        toolbar.setObjectName("toolbar")
+        toolbar.setObjectName(
+            "toolbar"
+        )
+
         toolbar.setFixedHeight(60)
 
         tb = QHBoxLayout(toolbar)
-        tb.setContentsMargins(20,0,20,0)
 
-        tb.addWidget(QLabel("h-pen"))
+        tb.setContentsMargins(
+            20,
+            0,
+            20,
+            0
+        )
+
+
+        tb.addWidget(
+            QLabel("h-pen")
+        )
 
         tb.addStretch()
+
 
         undo_btn = QPushButton("↶")
         redo_btn = QPushButton("↷")
         pen_btn = QPushButton("✏")
         eraser_btn = QPushButton("🧽")
-        zoom_btn = QPushButton("🔍")
         color_btn = QPushButton("🎨")
+        zoom_btn = QPushButton("🔍")
+
 
         size_slider = QSlider(
-        Qt.Horizontal
+            Qt.Horizontal
         )
 
-        size_slider.setMinimum(1)
-        size_slider.setMaximum(20)
-        size_slider.setValue(3)
+        size_slider.setMinimum(
+            1
+        )
 
-        size_slider.setFixedWidth(120)
+        size_slider.setMaximum(
+            20
+        )
 
-        tb.addWidget(undo_btn)
-        tb.addWidget(redo_btn)
-        tb.addWidget(pen_btn)
-        tb.addWidget(eraser_btn)
-        tb.addWidget(color_btn)
-        tb.addWidget(size_slider)
-        tb.addWidget(zoom_btn)
+        size_slider.setValue(
+            3
+        )
 
-        right_layout.addWidget(toolbar)
+        size_slider.setFixedWidth(
+            120
+        )
+
+
+        tb.addWidget(
+            undo_btn
+        )
+
+        tb.addWidget(
+            redo_btn
+        )
+
+        tb.addWidget(
+            pen_btn
+        )
+
+        tb.addWidget(
+            eraser_btn
+        )
+
+        tb.addWidget(
+            color_btn
+        )
+
+        tb.addWidget(
+            size_slider
+        )
+
+        tb.addWidget(
+            zoom_btn
+        )
+
+
+        right_layout.addWidget(
+            toolbar
+        )
+
 
 #canvas alanı
-      
         canvas_area = QWidget()
-        canvas_layout = QVBoxLayout(canvas_area)
-        canvas_layout.setContentsMargins(30,30,30,30)
+
+        canvas_layout = QVBoxLayout(
+            canvas_area
+        )
+
+        canvas_layout.setContentsMargins(
+            30,
+            30,
+            30,
+            30
+        )
+
 
         from ui.canvas import InfiniteCanvas
-        
+
+
         canvas = InfiniteCanvas()
-        
+
+
 #renk seçici
         def chooseColor():
             color = QColorDialog.getColor()
 
-        if color.isValid():
-            canvas.setColor(
-                color.name()
-            )
+            if color.isValid():
+                canvas.setColor(
+                    color.name()
+                )
 
 
-color_btn.clicked.connect(
-    chooseColor
-)
+        color_btn.clicked.connect(
+            chooseColor
+        )
+
 
 #kalem butonu
         pen_btn.clicked.connect(
             canvas.setPen
         )
 
+
 #silgi butonu
         eraser_btn.clicked.connect(
             canvas.setEraser
         )
 
-        canvas_layout.addWidget(canvas)
-        right_layout.addWidget(canvas_area)
 
-        root.addWidget(right)
+#kalem boyutu
+        size_slider.valueChanged.connect(
+            lambda value: setattr(
+                canvas,
+                "base_size",
+                value
+            )
+        )
 
 
-app = QApplication(sys.argv)
+        canvas_layout.addWidget(
+            canvas
+        )
+
+        right_layout.addWidget(
+            canvas_area
+        )
+
+        root.addWidget(
+            right
+        )
+
+
+app = QApplication(
+    sys.argv
+)
 
 window = HPen()
+
 window.show()
 
-sys.exit(app.exec())
+sys.exit(
+    app.exec()
+)
