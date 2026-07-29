@@ -83,10 +83,10 @@ class InfiniteCanvas(QGraphicsView):
 
 #çizgi rengi
         pen = QPen(
-            QColor("#E5E7EB")
-        )
+            QColor("#222222")
+                )
 
-        pen.setWidth(1)
+        pen.setWidth(0.8)
 
         painter.setPen(pen)
 
