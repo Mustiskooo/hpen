@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QBrush, QColor, QPainter, QPen
+from PySide6.QtGui import QColor, QPainter, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
 
 
@@ -15,7 +15,7 @@ class InfiniteCanvas(QGraphicsView):
 
         self.scene = QGraphicsScene(self)
         self.setScene(self.scene)
-        
+
 #sonsuz hissi için büyük alan
         self.scene.setSceneRect(
             -10000,
@@ -23,14 +23,12 @@ class InfiniteCanvas(QGraphicsView):
             20000,
             20000
         )
-#canvas rengi
-        self.setBackgroundBrush(
-            QBrush(QColor("#FFFFFF"))
-        )
+
 #render
         self.setRenderHint(
             QPainter.Antialiasing
         )
+
 #scrollbar gizleme
         self.setHorizontalScrollBarPolicy(
             Qt.ScrollBarAlwaysOff
@@ -78,15 +76,21 @@ class InfiniteCanvas(QGraphicsView):
 
 
     def drawBackground(self, painter, rect):
+#kağıt rengi
+        painter.fillRect(
+            rect,
+            QColor("#FFFFFF")
+        )
+
 #kare boyutu
         grid_size = 40
 
 #çizgi rengi
         pen = QPen(
             QColor("#222222")
-                )
+        )
 
-        pen.setWidth(0.8)
+        pen.setWidthF(0.8)
 
         painter.setPen(pen)
 
