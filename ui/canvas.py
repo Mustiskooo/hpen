@@ -10,33 +10,48 @@ class InfiniteCanvas(QGraphicsView):
         self.scene = QGraphicsScene(self)
         self.setScene(self.scene)
 
-#sonsuz hissi için büyük alan
-        self.scene.setSceneRect(-10000, -10000, 20000, 20000)
+        #sonsuz hissi için büyük alan
+        self.scene.setSceneRect(
+            -10000,
+            -10000,
+            20000,
+            20000
+        )
 
-#canvas rengi
-        self.setBackgroundBrush(QBrush(QColor("#FCFCFC")))
-#render
-        self.setRenderHint(QPainter.Antialiasing)
-#scrollbar gizleme
+        #canvas rengi
+        self.setBackgroundBrush(
+            QBrush(QColor("#FCFCFC"))
+        )
+
+        #render
+        self.setRenderHint(
+            QPainter.Antialiasing
+        )
+
+        #scrollbar gizleme
         self.setHorizontalScrollBarPolicy(
             Qt.ScrollBarAlwaysOff
         )
         self.setVerticalScrollBarPolicy(
             Qt.ScrollBarAlwaysOff
         )
-#pan
+
+        #pan
         self.setDragMode(
             QGraphicsView.ScrollHandDrag
         )
-#zoom seviyesi
+
+        #zoom seviyesi
         self.zoom = 1.0
 
 
     def wheelEvent(self, event):
+        #zoom değeri
         zoom_factor = 1.15
 
         if event.angleDelta().y() > 0:
             self.zoom *= zoom_factor
+
             self.scale(
                 zoom_factor,
                 zoom_factor
@@ -44,6 +59,7 @@ class InfiniteCanvas(QGraphicsView):
 
         else:
             self.zoom /= zoom_factor
+
             self.scale(
                 1 / zoom_factor,
                 1 / zoom_factor
