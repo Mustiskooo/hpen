@@ -33,6 +33,7 @@ class InfiniteCanvas(QGraphicsView):
         self.setHorizontalScrollBarPolicy(
             Qt.ScrollBarAlwaysOff
         )
+
         self.setVerticalScrollBarPolicy(
             Qt.ScrollBarAlwaysOff
         )
@@ -57,6 +58,9 @@ class InfiniteCanvas(QGraphicsView):
 
 #aktif çizgi
         self.current_item = None
+
+#aktif araç
+        self.tool = "pen"
 
 #kalem ayarları
         self.pen = QPen(
@@ -148,14 +152,33 @@ class InfiniteCanvas(QGraphicsView):
 
 
     def mousePressEvent(self, event):
-#sol tuş ile çizim
+#sol tuş
         if event.button() == Qt.LeftButton:
 
-            self.drawing = True
+#silgi
+            if self.tool == "eraser":
 
+                pos = self.mapToScene(
+                    event.position().toPoint()
+                )
+
+                item = self.scene.itemAt(
+                    pos,
+                    self.transform()
+                )
+
+                if item:
+                    self.scene.removeItem(item)
+
+                return
+
+
+#kalem
             pos = self.mapToScene(
                 event.position().toPoint()
             )
+
+            self.drawing = True
 
             self.path = QPainterPath()
 
@@ -173,7 +196,25 @@ class InfiniteCanvas(QGraphicsView):
 
 
     def mouseMoveEvent(self, event):
-#çizim aktifse
+#silgi
+        if self.tool == "eraser":
+
+            pos = self.mapToScene(
+                event.position().toPoint()
+            )
+
+            item = self.scene.itemAt(
+                pos,
+                self.transform()
+            )
+
+            if item:
+                self.scene.removeItem(item)
+
+            return
+
+
+#çizim
         if self.drawing:
 
             pos = self.mapToScene(
@@ -187,6 +228,8 @@ class InfiniteCanvas(QGraphicsView):
             self.current_item.setPath(
                 self.path
             )
+
+            self.scene.update()
 
         else:
             super().mouseMoveEvent(event)
@@ -202,3 +245,13 @@ class InfiniteCanvas(QGraphicsView):
 
         else:
             super().mouseReleaseEvent(event)
+
+
+    def setEraser(self):
+#silgi modu
+        self.tool = "eraser"
+
+
+    def setPen(self):
+#kalem modu
+        self.tool = "pen"
