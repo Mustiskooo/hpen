@@ -1,275 +1,33 @@
 import sys
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (
-    QApplication,
-    QFrame,
-    QHBoxLayout,
-    QLabel,
-    QMainWindow,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-    QColorDialog,
-    QSlider
-)
+from PySide6.QtWidgets import QApplication
 
+from ui.canvas_window import CanvasWindow
+from ui.notch import NotchWindow
 
-class HPen(QMainWindow):
-    def __init__(self):
-        super().__init__()
 
-        self.setWindowTitle("h-pen")
-        self.resize(1600, 900)
+def main():
+#uygulama
+    app = QApplication(sys.argv)
 
-        self.setStyleSheet("""
-        QMainWindow{
-            background:#18181B;
-        }
+#canvas
+    canvas = CanvasWindow()
+    canvas.show()
 
-        QWidget{
-            color:#F4F4F5;
-            font-size:14px;
-            font-family:Segoe UI;
-        }
+#notch
+    notch = NotchWindow()
 
-        QFrame#sidebar{
-            background:#202127;
-            border-right:1px solid #34353B;
-        }
+#canvas ile bağlantı
+    notch.canvas = canvas
 
-        QFrame#toolbar{
-            background:#27272A;
-            border-bottom:1px solid #34353B;
-        }
+#notch'u göster
+    notch.show()
 
-        QPushButton{
-            background:transparent;
-            border:none;
-            padding:8px;
-            border-radius:8px;
-        }
+#uygulamayı başlat
+    sys.exit(
+        app.exec()
+    )
 
-        QPushButton:hover{
-            background:#34353B;
-        }
-        """)
 
-        central = QWidget()
-        self.setCentralWidget(central)
-
-        root = QHBoxLayout(central)
-        root.setContentsMargins(0,0,0,0)
-        root.setSpacing(0)
-
-
-#sidebar
-        sidebar = QFrame()
-        sidebar.setObjectName("sidebar")
-        sidebar.setFixedWidth(80)
-
-        side_layout = QVBoxLayout(sidebar)
-        side_layout.setContentsMargins(12,20,12,20)
-
-        logo = QLabel("✏")
-        logo.setAlignment(Qt.AlignCenter)
-        logo.setStyleSheet(
-            "font-size:30px;"
-        )
-
-        side_layout.addWidget(logo)
-
-        for text in ["🏠","📁","⭐","⚙"]:
-            btn = QPushButton(text)
-            btn.setFixedHeight(42)
-            side_layout.addWidget(btn)
-
-        side_layout.addStretch()
-
-        root.addWidget(sidebar)
-
-
-#sağ :3
-        right = QWidget()
-
-        right_layout = QVBoxLayout(right)
-        right_layout.setContentsMargins(
-            0,
-            0,
-            0,
-            0
-        )
-
-        right_layout.setSpacing(0)
-
-
-#toolbar
-        toolbar = QFrame()
-        toolbar.setObjectName(
-            "toolbar"
-        )
-
-        toolbar.setFixedHeight(60)
-
-        tb = QHBoxLayout(toolbar)
-
-        tb.setContentsMargins(
-            20,
-            0,
-            20,
-            0
-        )
-
-
-        tb.addWidget(
-            QLabel("h-pen")
-        )
-
-        tb.addStretch()
-
-
-        undo_btn = QPushButton("↶")
-        redo_btn = QPushButton("↷")
-        pen_btn = QPushButton("✏")
-        eraser_btn = QPushButton("🧽")
-        color_btn = QPushButton("🎨")
-        zoom_btn = QPushButton("🔍")
-
-
-        size_slider = QSlider(
-            Qt.Horizontal
-        )
-
-        size_slider.setMinimum(
-            1
-        )
-
-        size_slider.setMaximum(
-            20
-        )
-
-        size_slider.setValue(
-            3
-        )
-
-        size_slider.setFixedWidth(
-            120
-        )
-
-
-        tb.addWidget(
-            undo_btn
-        )
-
-        tb.addWidget(
-            redo_btn
-        )
-
-        tb.addWidget(
-            pen_btn
-        )
-
-        tb.addWidget(
-            eraser_btn
-        )
-
-        tb.addWidget(
-            color_btn
-        )
-
-        tb.addWidget(
-            size_slider
-        )
-
-        tb.addWidget(
-            zoom_btn
-        )
-
-
-        right_layout.addWidget(
-            toolbar
-        )
-
-
-#canvas alanı
-        canvas_area = QWidget()
-
-        canvas_layout = QVBoxLayout(
-            canvas_area
-        )
-
-        canvas_layout.setContentsMargins(
-            30,
-            30,
-            30,
-            30
-        )
-
-
-        from ui.canvas import InfiniteCanvas
-
-
-        canvas = InfiniteCanvas()
-
-
-#renk seçici
-        def chooseColor():
-            color = QColorDialog.getColor()
-
-            if color.isValid():
-                canvas.setColor(
-                    color.name()
-                )
-
-
-        color_btn.clicked.connect(
-            chooseColor
-        )
-
-
-#kalem butonu
-        pen_btn.clicked.connect(
-            canvas.setPen
-        )
-
-
-#silgi butonu
-        eraser_btn.clicked.connect(
-            canvas.setEraser
-        )
-
-
-#kalem boyutu
-        size_slider.valueChanged.connect(
-            lambda value: setattr(
-                canvas,
-                "base_size",
-                value
-            )
-        )
-
-
-        canvas_layout.addWidget(
-            canvas
-        )
-
-        right_layout.addWidget(
-            canvas_area
-        )
-
-        root.addWidget(
-            right
-        )
-
-
-app = QApplication(
-    sys.argv
-)
-
-window = HPen()
-
-window.show()
-
-sys.exit(
-    app.exec()
-)
+if __name__ == "__main__":
+    main()
